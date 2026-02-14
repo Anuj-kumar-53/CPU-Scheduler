@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Cpu, Network, ArrowRight } from 'lucide-react';
+import { Cpu, Network, ArrowRight, LogOut, User } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import AuthModal from './AuthModal';
 
 const LandingPage = ({ onSelect }) => {
+    const { isAuthenticated, user, logout } = useAuth();
+    const [showAuthModal, setShowAuthModal] = useState(false);
+
+    const handleCardClick = (type) => {
+        if (!isAuthenticated) {
+            setShowAuthModal(true);
+        } else {
+            onSelect(type);
+        }
+    };
+
     return (
         <div className="flex flex-col h-screen bg-zinc-950 text-white relative overflow-hidden items-center justify-center p-8">
             {/* Background Effects */}
@@ -13,6 +26,40 @@ const LandingPage = ({ onSelect }) => {
 
             <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-20"></div>
 
+            {/* Auth Buttons - Top Right */}
+            <div className="absolute top-8 right-8 z-20 flex items-center gap-4">
+                {isAuthenticated ? (
+                    <>
+                        <div className="flex items-center gap-2 px-4 py-2 bg-zinc-900/50 border border-white/10 rounded-lg">
+                            <User size={16} className="text-zinc-400" />
+                            <span className="text-sm text-zinc-300">{user?.name}</span>
+                        </div>
+                        <button
+                            onClick={logout}
+                            className="flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/30 rounded-lg transition-all text-red-400 hover:text-red-300"
+                        >
+                            <LogOut size={16} />
+                            <span className="text-sm font-medium">Logout</span>
+                        </button>
+                    </>
+                ) : (
+                    <>
+                        <button
+                            onClick={() => setShowAuthModal(true)}
+                            className="px-4 py-2 text-sm font-medium text-zinc-300 hover:text-white transition-colors"
+                        >
+                            Sign In
+                        </button>
+                        <button
+                            onClick={() => setShowAuthModal(true)}
+                            className="px-6 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 rounded-lg text-sm font-bold transition-all shadow-lg shadow-indigo-600/20"
+                        >
+                            Sign Up
+                        </button>
+                    </>
+                )}
+            </div>
+
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -22,7 +69,7 @@ const LandingPage = ({ onSelect }) => {
                     AlgoVisualizer
                 </h1>
                 <p className="text-zinc-500 text-lg max-w-2xl mx-auto">
-                    Interactive visualizations for complex algorithms. Select a module to begin exploring execution flows and performance metrics.
+                    Interactive visualizations for complex algorithms. {!isAuthenticated && 'Sign in to'} explore execution flows and performance metrics.
                 </p>
             </motion.div>
 
@@ -32,9 +79,14 @@ const LandingPage = ({ onSelect }) => {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 }}
-                    onClick={() => onSelect('cpu')}
-                    className="group relative bg-zinc-900/50 hover:bg-zinc-900/80 border border-white/5 hover:border-indigo-500/30 rounded-3xl p-8 text-left transition-all duration-300 shadow-xl hover:shadow-indigo-500/10 flex flex-col gap-6"
+                    onClick={() => handleCardClick('cpu')}
+                    className={`group relative bg-zinc-900/50 hover:bg-zinc-900/80 border border-white/5 hover:border-indigo-500/30 rounded-3xl p-8 text-left transition-all duration-300 shadow-xl hover:shadow-indigo-500/10 flex flex-col gap-6 ${!isAuthenticated ? 'cursor-pointer' : ''}`}
                 >
+                    {!isAuthenticated && (
+                        <div className="absolute top-4 right-4 px-3 py-1 bg-yellow-500/10 border border-yellow-500/20 rounded-full text-xs font-bold text-yellow-400">
+                            Login Required
+                        </div>
+                    )}
                     <div className="p-4 bg-indigo-500/10 rounded-2xl w-fit group-hover:scale-110 transition-transform duration-300">
                         <Cpu size={32} className="text-indigo-400 group-hover:text-indigo-300" />
                     </div>
@@ -45,7 +97,7 @@ const LandingPage = ({ onSelect }) => {
                         </p>
                     </div>
                     <div className="mt-auto flex items-center gap-2 text-sm font-bold text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-[-10px] group-hover:translate-x-0">
-                        LAUNCH SIMULATOR <ArrowRight size={16} />
+                        {isAuthenticated ? 'LAUNCH SIMULATOR' : 'SIGN IN TO ACCESS'} <ArrowRight size={16} />
                     </div>
                 </motion.button>
 
@@ -54,9 +106,14 @@ const LandingPage = ({ onSelect }) => {
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.2 }}
-                    onClick={() => onSelect('dsa')}
-                    className="group relative bg-zinc-900/50 hover:bg-zinc-900/80 border border-white/5 hover:border-cyan-500/30 rounded-3xl p-8 text-left transition-all duration-300 shadow-xl hover:shadow-cyan-500/10 flex flex-col gap-6"
+                    onClick={() => handleCardClick('dsa')}
+                    className={`group relative bg-zinc-900/50 hover:bg-zinc-900/80 border border-white/5 hover:border-cyan-500/30 rounded-3xl p-8 text-left transition-all duration-300 shadow-xl hover:shadow-cyan-500/10 flex flex-col gap-6 ${!isAuthenticated ? 'cursor-pointer' : ''}`}
                 >
+                    {!isAuthenticated && (
+                        <div className="absolute top-4 right-4 px-3 py-1 bg-yellow-500/10 border border-yellow-500/20 rounded-full text-xs font-bold text-yellow-400">
+                            Login Required
+                        </div>
+                    )}
                     <div className="p-4 bg-cyan-500/10 rounded-2xl w-fit group-hover:scale-110 transition-transform duration-300">
                         <Network size={32} className="text-cyan-400 group-hover:text-cyan-300" />
                     </div>
@@ -67,10 +124,13 @@ const LandingPage = ({ onSelect }) => {
                         </p>
                     </div>
                     <div className="mt-auto flex items-center gap-2 text-sm font-bold text-cyan-400 opacity-0 group-hover:opacity-100 transition-opacity transform translate-x-[-10px] group-hover:translate-x-0">
-                        OPEN VISUALIZER <ArrowRight size={16} />
+                        {isAuthenticated ? 'OPEN VISUALIZER' : 'SIGN IN TO ACCESS'} <ArrowRight size={16} />
                     </div>
                 </motion.button>
             </div>
+
+            {/* Auth Modal */}
+            <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
         </div>
     );
 };

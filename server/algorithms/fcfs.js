@@ -27,7 +27,6 @@ export const fcfs = (processes) => {
             endTime: completionTime
         });
 
-        // Update process object (creating a new one to avoid mutating original if needed, but here we can return enhanced objects)
         resultProcesses.push({
             ...process,
             startTime,

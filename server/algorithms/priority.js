@@ -1,166 +1,74 @@
 export const priority = (processes, preemptive = false) => {
-    if (preemptive) {
-        return priorityPreemptive(processes);
-    } else {
-        return priorityNonPreemptive(processes);
-    }
-};
-
-const priorityNonPreemptive = (processes) => {
-    // Lower number = Higher priority (usually, but let's assume Higher Number = Higher Priority? 
-    // Standard varies. Linux uses lower=higher. Windows uses higher=higher.
-    // Let's assume Lower Number = Higher Priority (1 is highest, 10 is lowest) for now, OR let user decide?
-    // Common academic textbooks often use Lower = Higher. 
-    // Let's document: Lower Value = Higher Priority.
-
     let currentTime = 0;
-    let completed = 0;
-    const n = processes.length;
     const timeline = [];
-    const resultProcesses = [];
-    const isCompleted = new Array(n).fill(false);
+    const resultProcesses = processes.map(p => ({
+        ...p,
+        remainingTime: p.burstTime,
+        waitingTime: 0,
+        turnaroundTime: 0,
+        completionTime: 0,
+        startTime: -1
+    }));
 
-    // Sort by arrival
-    let sortedProcesses = [...processes].sort((a, b) => a.arrivalTime - b.arrivalTime);
+    let completed = 0;
+    let n = processes.length;
+    let lastProcessId = null;
 
     while (completed < n) {
-        let idx = -1;
-        let bestPriority = Infinity; // Lower is better
+        const available = resultProcesses.filter(p => p.arrivalTime <= currentTime && p.remainingTime > 0);
 
-        for (let i = 0; i < n; i++) {
-            if (!isCompleted[i] && sortedProcesses[i].arrivalTime <= currentTime) {
-                if (sortedProcesses[i].priority < bestPriority) {
-                    bestPriority = sortedProcesses[i].priority;
-                    idx = i;
-                } else if (sortedProcesses[i].priority === bestPriority) {
-                    // FCFS for same priority
-                    if (idx !== -1 && sortedProcesses[i].arrivalTime < sortedProcesses[idx].arrivalTime) {
-                        idx = i;
-                    } else if (idx === -1) {
-                        idx = i;
-                    }
-                }
+        if (available.length === 0) {
+            if (lastProcessId !== null) {
+                timeline[timeline.length - 1].endTime = currentTime;
+                lastProcessId = null;
             }
+            currentTime++;
+            continue;
         }
 
-        if (idx !== -1) {
-            const process = sortedProcesses[idx];
-            const startTime = currentTime;
-            const completionTime = startTime + process.burstTime;
-            const turnaroundTime = completionTime - process.arrivalTime;
-            const waitingTime = turnaroundTime - process.burstTime;
+        // Lower value = Higher Priority
+        available.sort((a, b) => a.priority - b.priority || a.arrivalTime - b.arrivalTime);
+        const currentProcess = available[0];
 
-            timeline.push({
-                processId: process.id,
-                startTime: startTime,
-                endTime: completionTime
-            });
-
-            resultProcesses.push({
-                ...process,
-                startTime,
-                completionTime,
-                turnaroundTime,
-                waitingTime
-            });
-
-            currentTime = completionTime;
-            isCompleted[idx] = true;
-            completed++;
-        } else {
-            let nextArrival = Infinity;
-            for (let i = 0; i < n; i++) {
-                if (!isCompleted[i] && sortedProcesses[i].arrivalTime < nextArrival) {
-                    nextArrival = sortedProcesses[i].arrivalTime;
-                }
+        if (currentProcess.id !== lastProcessId) {
+            if (lastProcessId !== null) {
+                timeline[timeline.length - 1].endTime = currentTime;
             }
-            if (nextArrival === Infinity) break;
-
+            if (currentProcess.startTime === -1) {
+                currentProcess.startTime = currentTime;
+            }
             timeline.push({
-                processId: null,
+                processId: currentProcess.id,
                 startTime: currentTime,
-                endTime: nextArrival
+                endTime: currentTime
             });
-            currentTime = nextArrival;
-        }
-    }
-    return { processes: resultProcesses, timeline };
-};
-
-const priorityPreemptive = (processes) => {
-    let currentTime = 0;
-    let completed = 0;
-    const n = processes.length;
-    const timeline = [];
-    const activeProcesses = processes.map(p => ({ ...p, remainingTime: p.burstTime, startTime: -1 }));
-    let completedList = [];
-
-    while (completed < n) {
-        const available = activeProcesses.filter(p => p.arrivalTime <= currentTime && p.remainingTime > 0);
-
-        let selected = null;
-        if (available.length > 0) {
-            // Lowest value priority is highest priority
-            available.sort((a, b) => a.priority - b.priority || a.arrivalTime - b.arrivalTime);
-            selected = available[0];
+            lastProcessId = currentProcess.id;
         }
 
-        if (selected) {
-            const futureArrivals = activeProcesses.filter(p => p.arrivalTime > currentTime).sort((a, b) => a.arrivalTime - b.arrivalTime);
-            const nextArrival = futureArrivals.length > 0 ? futureArrivals[0].arrivalTime : Infinity;
+        if (preemptive) {
+            currentProcess.remainingTime--;
+            currentTime++;
 
-            let runTime = Math.min(selected.remainingTime, nextArrival - currentTime);
-
-            if (selected.startTime === -1) {
-                selected.startTime = currentTime;
-            }
-
-            const lastEntry = timeline[timeline.length - 1];
-            if (lastEntry && lastEntry.processId === selected.id && lastEntry.endTime === currentTime) {
-                lastEntry.endTime += runTime;
-            } else {
-                timeline.push({
-                    processId: selected.id,
-                    startTime: currentTime,
-                    endTime: currentTime + runTime
-                });
-            }
-
-            selected.remainingTime -= runTime;
-            currentTime += runTime;
-
-            if (selected.remainingTime === 0) {
+            if (currentProcess.remainingTime === 0) {
+                currentProcess.completionTime = currentTime;
+                currentProcess.turnaroundTime = currentProcess.completionTime - currentProcess.arrivalTime;
+                currentProcess.waitingTime = currentProcess.turnaroundTime - currentProcess.burstTime;
                 completed++;
-                const completionTime = currentTime;
-                const turnaroundTime = completionTime - selected.arrivalTime;
-                const waitingTime = turnaroundTime - selected.burstTime;
-
-                completedList.push({
-                    ...selected,
-                    completionTime,
-                    turnaroundTime,
-                    waitingTime
-                });
+                timeline[timeline.length - 1].endTime = currentTime;
+                lastProcessId = null;
             }
         } else {
-            // Idle
-            const futureArrivals = activeProcesses.filter(p => p.arrivalTime > currentTime).sort((a, b) => a.arrivalTime - b.arrivalTime);
-            const nextArrival = futureArrivals.length > 0 ? futureArrivals[0].arrivalTime : Infinity;
-
-            if (nextArrival === Infinity) break;
-
-            const lastEntry = timeline[timeline.length - 1];
-            if (lastEntry && lastEntry.processId === null && lastEntry.endTime === currentTime) {
-                lastEntry.endTime = nextArrival;
-            } else {
-                timeline.push({
-                    processId: null,
-                    startTime: currentTime,
-                    endTime: nextArrival
-                });
-            }
-            currentTime = nextArrival;
+            const runDuration = currentProcess.remainingTime;
+            currentTime += runDuration;
+            currentProcess.remainingTime = 0;
+            currentProcess.completionTime = currentTime;
+            currentProcess.turnaroundTime = currentProcess.completionTime - currentProcess.arrivalTime;
+            currentProcess.waitingTime = currentProcess.turnaroundTime - currentProcess.burstTime;
+            completed++;
+            timeline[timeline.length - 1].endTime = currentTime;
+            lastProcessId = null;
         }
     }
-    return { processes: completedList, timeline };
+
+    return { processes: resultProcesses, timeline };
 };

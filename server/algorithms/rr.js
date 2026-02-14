@@ -1,96 +1,72 @@
 export const rr = (processes, timeQuantum) => {
     let currentTime = 0;
     const timeline = [];
-    const resultProcesses = [];
-    const n = processes.length;
-
-    // Queue for Round Robin
-    const queue = [];
-
-    // Deep copy to track remaining time
-    const activeProcesses = processes.map(p => ({
+    const resultProcesses = processes.map(p => ({
         ...p,
         remainingTime: p.burstTime,
-        startTime: -1,
-        inQueue: false
+        waitingTime: 0,
+        turnaroundTime: 0,
+        completionTime: 0,
+        startTime: -1
     }));
 
-    // Helper to add arriving processes to queue
-    const checkArrivals = (time) => {
-        // Sort by arrival time to ensure correct order of adding to queue for same arrival time?
-        // Usually arrival time is enough.
-        const arriving = activeProcesses.filter(p => p.arrivalTime <= time && p.remainingTime > 0 && !p.inQueue && !queue.includes(p));
-        arriving.sort((a, b) => a.arrivalTime - b.arrivalTime);
-
-        arriving.forEach(p => {
-            queue.push(p);
-            p.inQueue = true;
-        });
-    };
-
-    // Initial check
-    checkArrivals(currentTime);
-
-    // If queue is empty but not all completed, jump to next arrival
-    // But we need to handle "idle" properly.
-
+    let queue = [];
     let completed = 0;
+    let n = processes.length;
+
+    // Sort by arrival initially
+    let sortedProcesses = [...resultProcesses].sort((a, b) => a.arrivalTime - b.arrivalTime);
+    let processIdx = 0;
+
+    // Add first process(es) that arrived at time 0
+    while (processIdx < n && sortedProcesses[processIdx].arrivalTime <= currentTime) {
+        queue.push(sortedProcesses[processIdx]);
+        processIdx++;
+    }
 
     while (completed < n) {
         if (queue.length === 0) {
-            // Jump to next arrival
-            const futureArrivals = activeProcesses.filter(p => p.arrivalTime > currentTime && p.remainingTime > 0).sort((a, b) => a.arrivalTime - b.arrivalTime);
-
-            if (futureArrivals.length === 0) break; // All done or checked
-
-            const nextArrival = futureArrivals[0].arrivalTime;
-
-            timeline.push({
-                processId: null,
-                startTime: currentTime,
-                endTime: nextArrival
-            });
-            currentTime = nextArrival;
-            checkArrivals(currentTime);
+            currentTime++;
+            // Check for new arrivals
+            while (processIdx < n && sortedProcesses[processIdx].arrivalTime <= currentTime) {
+                queue.push(sortedProcesses[processIdx]);
+                processIdx++;
+            }
+            continue;
         }
 
-        if (queue.length > 0) {
-            const currentProcess = queue.shift();
-            // currentProcess.inQueue = false; // It's running now, effectively removed from queue but will be added back if not finished
+        const currentProcess = queue.shift();
 
-            if (currentProcess.startTime === -1) {
-                currentProcess.startTime = currentTime;
+        if (currentProcess.startTime === -1) {
+            currentProcess.startTime = currentTime;
+        }
+
+        const runDuration = Math.min(currentProcess.remainingTime, timeQuantum);
+
+        timeline.push({
+            processId: currentProcess.id,
+            startTime: currentTime,
+            endTime: currentTime + runDuration
+        });
+
+        // Advance time incrementally to catch arrivals during the quantum
+        for (let i = 0; i < runDuration; i++) {
+            currentTime++;
+            while (processIdx < n && sortedProcesses[processIdx].arrivalTime === currentTime) {
+                queue.push(sortedProcesses[processIdx]);
+                processIdx++;
             }
+        }
 
-            const runTime = Math.min(currentProcess.remainingTime, timeQuantum);
+        currentProcess.remainingTime -= runDuration;
 
-            timeline.push({
-                processId: currentProcess.id,
-                startTime: currentTime,
-                endTime: currentTime + runTime
-            });
-
-            currentTime += runTime;
-            currentProcess.remainingTime -= runTime;
-
-            // CRITICAL: Check for new arrivals BEFORE adding current process back
-            checkArrivals(currentTime);
-
-            if (currentProcess.remainingTime > 0) {
-                queue.push(currentProcess);
-            } else {
-                completed++;
-                const completionTime = currentTime;
-                const turnaroundTime = completionTime - currentProcess.arrivalTime;
-                const waitingTime = turnaroundTime - currentProcess.burstTime;
-
-                resultProcesses.push({
-                    ...currentProcess,
-                    completionTime,
-                    turnaroundTime,
-                    waitingTime
-                });
-            }
+        if (currentProcess.remainingTime === 0) {
+            currentProcess.completionTime = currentTime;
+            currentProcess.turnaroundTime = currentProcess.completionTime - currentProcess.arrivalTime;
+            currentProcess.waitingTime = currentProcess.turnaroundTime - currentProcess.burstTime;
+            completed++;
+        } else {
+            queue.push(currentProcess);
         }
     }
 

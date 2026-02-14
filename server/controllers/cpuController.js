@@ -2,6 +2,8 @@ import { fcfs } from '../algorithms/fcfs.js';
 import { sjf } from '../algorithms/sjf.js';
 import { priority } from '../algorithms/priority.js';
 import { rr } from '../algorithms/rr.js';
+import { mlq } from '../algorithms/mlq.js';
+import { mlfq } from '../algorithms/mlfq.js';
 
 export const simulateScheduler = (req, res) => {
     const { algorithm, processes, timeQuantum } = req.body;
@@ -42,6 +44,12 @@ export const simulateScheduler = (req, res) => {
                 return res.status(400).json({ error: 'Invalid time quantum' });
             }
             result = rr(parsedProcesses, Number(timeQuantum));
+            break;
+        case 'MLQ':
+            result = mlq(parsedProcesses);
+            break;
+        case 'MLFQ':
+            result = mlfq(parsedProcesses);
             break;
         default:
             return res.status(400).json({ error: 'Invalid algorithm selected' });

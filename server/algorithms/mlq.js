@@ -67,11 +67,6 @@ export const mlq = (processes) => {
 
             if (p.startTime === -1) p.startTime = currentTime;
 
-            // RR Logic: Run for TQ or Remaining
-            // BUT, strictly speaking for MLQ, do we preempt RR if *another* Q1 process arrives?
-            // Standard RR does not preempt for arrival, new arrivals just join the queue end.
-            // So we run for min(TQ, Remaining).
-
             const runTime = Math.min(p.remainingTime, tq1);
 
             timeline.push({
@@ -80,11 +75,6 @@ export const mlq = (processes) => {
                 endTime: currentTime + runTime,
                 queueId: 1
             });
-
-            // Advance time and check arrivals
-            // We need to check arrivals step-by-step or after run?
-            // Standard RR adds arrivals happening during execution to the end of queue.
-            // Since we process discretely here, we add them after execution block.
 
             currentTime += runTime;
             p.remainingTime -= runTime;
@@ -149,7 +139,6 @@ export const mlq = (processes) => {
                     p.waitingTime = p.turnaroundTime - p.burstTime;
                     resultProcesses.push(p);
                 }
-                // Else continue from top
             }
         }
     }
