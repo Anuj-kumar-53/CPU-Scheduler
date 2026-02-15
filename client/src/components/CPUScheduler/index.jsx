@@ -43,7 +43,7 @@ const CPUScheduler = ({ onBack }) => {
                 timeQuantum: algorithm === 'RR' ? timeQuantum : undefined
             };
 
-            const response = await axios.post('http://localhost:5000/simulate', payload);
+            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/simulate`, payload);
             setSimulationResult(response.data);
             setStatus('running');
             setSkipTrigger(0);

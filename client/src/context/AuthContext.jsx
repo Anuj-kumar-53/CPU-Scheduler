@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
 
     const verifyToken = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/auth/verify');
+            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/auth/verify`);
             setUser(response.data.user);
             setIsAuthenticated(true);
         } catch (error) {

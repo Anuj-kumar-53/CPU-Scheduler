@@ -33,7 +33,7 @@ const AuthModal = ({ isOpen, onClose }) => {
                 ? formData
                 : { email: formData.email, password: formData.password };
 
-            const response = await axios.post(`http://localhost:5000${endpoint}`, payload);
+            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}${endpoint}`, payload);
 
             login(response.data.user, response.data.token);
             onClose();
@@ -50,7 +50,7 @@ const AuthModal = ({ isOpen, onClose }) => {
         setLoading(true);
 
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/google', {
+            const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/google`, {
                 credential: credentialResponse.credential
             });
 
