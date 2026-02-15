@@ -103,7 +103,7 @@ const DSAWelcome = () => {
     const popularModules = ['sorting', 'linked-list', 'trees'];
 
     return (
-        <div className="flex flex-col h-full bg-zinc-950 overflow-auto no-scrollbar">
+        <div className="flex-1 flex flex-col bg-zinc-950 overflow-y-auto no-scrollbar min-h-0">
             {/* Hero Section */}
             <div className="relative px-6 md:px-12 py-10 md:py-16 border-b border-white/5 bg-gradient-to-br from-zinc-900 via-zinc-950 to-zinc-900">
                 {/* Animated Background Grid */}

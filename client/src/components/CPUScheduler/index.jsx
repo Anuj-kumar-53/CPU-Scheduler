@@ -79,7 +79,7 @@ const CPUScheduler = ({ onBack }) => {
     const isFinished = status === 'finished';
 
     return (
-        <div className="flex flex-col md:flex-row min-h-screen bg-zinc-950 text-zinc-100 font-sans selection:bg-indigo-500/30 w-full relative">
+        <div className="flex flex-col md:flex-row h-screen bg-zinc-950 text-zinc-100 font-sans selection:bg-indigo-500/30 w-full relative overflow-hidden">
 
             {/* Mobile Sidebar Toggle */}
             <div className="md:hidden fixed bottom-6 right-6 z-50">
@@ -95,14 +95,14 @@ const CPUScheduler = ({ onBack }) => {
             <motion.aside
                 initial={false}
                 animate={{
-                    x: (isSidebarOpen || windowWidth >= 768) ? 0 : -400,
+                    x: (isSidebarOpen || windowWidth >= 1024) ? 0 : -400,
                     opacity: 1,
                     // Lock ONLY when running. Pause/Idle/Finished = Interactive.
                     filter: (isRunning && !isSidebarOpen) ? 'blur(2px) grayscale(50%)' : 'none',
                     pointerEvents: (isRunning && !isSidebarOpen) ? 'none' : 'auto'
                 }}
                 transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                className={`fixed md:relative top-0 left-0 h-screen w-80 md:w-96 bg-zinc-900/95 md:bg-zinc-900/80 backdrop-blur-xl border-r border-white/5 flex flex-col z-40 shadow-2xl overflow-hidden ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} transition-transform duration-300 md:transition-none`}
+                className={`fixed lg:relative top-0 left-0 h-screen w-80 md:w-96 bg-zinc-900/95 md:bg-zinc-900/80 backdrop-blur-xl border-r border-white/5 flex flex-col z-40 shadow-2xl overflow-hidden ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'} transition-transform duration-300 lg:transition-none`}
             >
                 {/* Floating Background Blobs in Sidebar */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-500/10 rounded-full blur-3xl -mr-20 -mt-20 animate-pulse pointer-events-none"></div>
@@ -180,7 +180,7 @@ const CPUScheduler = ({ onBack }) => {
             </motion.aside>
 
             {/* Center Panel: Visualization */}
-            <main className="flex-1 flex flex-col bg-zinc-950 relative overflow-x-hidden min-h-screen md:h-screen">
+            <main className="flex-1 flex flex-col bg-zinc-950 relative overflow-hidden h-screen">
                 {/* Animated Floating Elements Background */}
                 <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
                     <div className="absolute top-20 left-20 w-32 h-32 bg-indigo-500/5 rounded-full blur-[50px] animate-bounce duration-[10s]"></div>

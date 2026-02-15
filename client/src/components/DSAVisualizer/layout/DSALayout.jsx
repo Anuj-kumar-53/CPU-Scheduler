@@ -31,7 +31,7 @@ const DSALayout = () => {
     }, []);
 
     return (
-        <div className="flex flex-col md:flex-row min-h-screen bg-zinc-950 text-white selection:bg-indigo-500/30 relative">
+        <div className="flex flex-col md:flex-row h-screen bg-zinc-950 text-white selection:bg-indigo-500/30 relative overflow-hidden">
             {/* Mobile Sidebar Toggle */}
             <div className="md:hidden fixed bottom-6 right-6 z-50">
                 <button
@@ -44,7 +44,7 @@ const DSALayout = () => {
 
             {/* Sidebar */}
             <aside
-                className={`fixed md:relative top-0 left-0 h-screen w-64 bg-zinc-900/95 md:bg-zinc-900/80 border-r border-white/5 flex flex-col z-40 backdrop-blur-xl transition-transform duration-300 md:transition-none ${(isSidebarOpen || windowWidth >= 768) ? 'translate-x-0' : '-translate-x-full'}`}
+                className={`fixed lg:relative top-0 left-0 h-screen w-64 bg-zinc-900/95 md:bg-zinc-900/80 border-r border-white/5 flex flex-col z-40 backdrop-blur-xl transition-transform duration-300 lg:transition-none ${(isSidebarOpen || windowWidth >= 1024) ? 'translate-x-0' : '-translate-x-full'}`}
             >
                 <button
                     onClick={() => {
@@ -102,7 +102,7 @@ const DSALayout = () => {
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 flex flex-col relative overflow-hidden bg-zinc-950 min-h-screen">
+            <main className="flex-1 flex flex-col relative overflow-hidden bg-zinc-950 h-screen">
                 <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-20"></div>
 
                 <Outlet />
