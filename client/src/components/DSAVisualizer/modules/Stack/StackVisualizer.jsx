@@ -61,7 +61,7 @@ const StackVisualizer = () => {
             </div>
 
             {/* Controls */}
-            <div className="p-6 border-b border-white/5 bg-zinc-900/30 flex gap-4">
+            <div className="p-6 border-b border-white/5 bg-zinc-900/30 flex flex-wrap gap-4">
                 <div className="flex items-center gap-2 bg-zinc-800/50 p-3 rounded-xl border border-white/5">
                     <input
                         type="number"

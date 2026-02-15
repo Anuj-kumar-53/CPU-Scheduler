@@ -97,41 +97,43 @@ const ProcessList = ({ processes, minimal, status, onDelete }) => {
     if (status !== 'finished') return null;
 
     return (
-        <div className="bg-zinc-900/60 backdrop-blur-md rounded-2xl border border-white/5 overflow-hidden shadow-2xl">
-            <div className="grid grid-cols-6 gap-4 p-4 textxs font-bold text-zinc-500 uppercase tracking-wider bg-white/5 border-b border-white/5">
-                <div className="pl-4">Process</div>
-                <div>Arrival</div>
-                <div>Burst</div>
-                <div>Completion</div>
-                <div>Turnaround</div>
-                <div>Waiting</div>
-            </div>
+        <div className="bg-zinc-900/60 backdrop-blur-md rounded-2xl border border-white/5 overflow-hidden shadow-2xl overflow-x-auto no-scrollbar">
+            <div className="min-w-[600px]">
+                <div className="grid grid-cols-6 gap-4 p-4 textxs font-bold text-zinc-500 uppercase tracking-wider bg-white/5 border-b border-white/5">
+                    <div className="pl-4">Process</div>
+                    <div>Arrival</div>
+                    <div>Burst</div>
+                    <div>Completion</div>
+                    <div>Turnaround</div>
+                    <div>Waiting</div>
+                </div>
 
-            <div className="divide-y divide-white/5">
-                {processes.map((p, index) => (
-                    <motion.div
-                        key={p.id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                        className="grid grid-cols-6 gap-4 p-4 text-sm hover:bg-white/5 transition-colors group"
-                    >
-                        <div className="pl-4 font-bold text-indigo-400 flex items-center gap-2">
-                            <span className="w-6 h-6 rounded bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-xs">P{p.id}</span>
-                        </div>
-                        <div className="text-zinc-400 font-mono flex items-center">{p.arrivalTime}</div>
-                        <div className="text-zinc-400 font-mono flex items-center">{p.burstTime}</div>
-                        <div className="text-zinc-200 font-mono flex items-center font-bold">{p.completionTime}</div>
-                        <div className="text-cyan-400 font-mono flex items-center font-bold bg-cyan-500/5 w-fit px-2 rounded relative cursor-help group/item">
-                            {p.turnaroundTime}
-                            <Tooltip text="Completion - Arrival" />
-                        </div>
-                        <div className="text-violet-400 font-mono flex items-center font-bold bg-violet-500/5 w-fit px-2 rounded relative cursor-help group/item">
-                            {p.waitingTime}
-                            <Tooltip text="Turnaround - Burst" />
-                        </div>
-                    </motion.div>
-                ))}
+                <div className="divide-y divide-white/5">
+                    {processes.map((p, index) => (
+                        <motion.div
+                            key={p.id}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.05 }}
+                            className="grid grid-cols-6 gap-4 p-4 text-sm hover:bg-white/5 transition-colors group"
+                        >
+                            <div className="pl-4 font-bold text-indigo-400 flex items-center gap-2">
+                                <span className="w-6 h-6 rounded bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-xs">P{p.id}</span>
+                            </div>
+                            <div className="text-zinc-400 font-mono flex items-center">{p.arrivalTime}</div>
+                            <div className="text-zinc-400 font-mono flex items-center">{p.burstTime}</div>
+                            <div className="text-zinc-200 font-mono flex items-center font-bold">{p.completionTime}</div>
+                            <div className="text-cyan-400 font-mono flex items-center font-bold bg-cyan-500/5 w-fit px-2 rounded relative cursor-help group/item">
+                                {p.turnaroundTime}
+                                <Tooltip text="Completion - Arrival" />
+                            </div>
+                            <div className="text-violet-400 font-mono flex items-center font-bold bg-violet-500/5 w-fit px-2 rounded relative cursor-help group/item">
+                                {p.waitingTime}
+                                <Tooltip text="Turnaround - Burst" />
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
             </div>
         </div>
     );

@@ -21,7 +21,15 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  overflow: hidden;
+  /* Allow scrolling on mobile, hide on desktop for app feel */
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+  body {
+    overflow: hidden;
+  }
 }
 
 /* Scrollbar Customization */

@@ -165,7 +165,7 @@ const SortingVisualizer = () => {
                 </div>
             </div>
 
-            <div className="flex-1 flex items-end justify-center px-12 py-12 gap-1 relative overflow-hidden">
+            <div className="flex-1 flex items-end justify-center px-4 md:px-12 py-8 md:py-12 gap-1 relative overflow-x-auto no-scrollbar">
                 <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.01)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.01)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none"></div>
 
                 <AnimatePresence>

@@ -17,42 +17,42 @@ const LandingPage = ({ onSelect }) => {
     };
 
     return (
-        <div className="flex flex-col h-screen bg-zinc-950 text-white relative overflow-hidden items-center justify-center p-8">
+        <div className="flex flex-col min-h-screen bg-zinc-950 text-white relative overflow-hidden items-center justify-center p-4 md:p-8 py-20 md:py-0">
             {/* Background Effects */}
             <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-                <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[500px] h-[500px] bg-indigo-500/10 rounded-full blur-[80px] animate-pulse"></div>
-                <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[80px] animate-pulse delay-1000"></div>
+                <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-indigo-500/10 rounded-full blur-[80px] animate-pulse"></div>
+                <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-cyan-500/10 rounded-full blur-[80px] animate-pulse delay-1000"></div>
             </div>
 
             <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none opacity-20"></div>
 
             {/* Auth Buttons - Top Right */}
-            <div className="absolute top-8 right-8 z-20 flex items-center gap-4">
+            <div className="absolute top-4 right-4 md:top-8 md:right-8 z-20 flex flex-wrap items-center justify-end gap-2 md:gap-4 max-w-[calc(100%-2rem)]">
                 {isAuthenticated ? (
                     <>
-                        <div className="flex items-center gap-2 px-4 py-2 bg-zinc-900/50 border border-white/10 rounded-lg">
-                            <User size={16} className="text-zinc-400" />
-                            <span className="text-sm text-zinc-300">{user?.name}</span>
+                        <div className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-zinc-900/50 border border-white/10 rounded-lg shrink-0">
+                            <User size={14} className="text-zinc-400" />
+                            <span className="text-xs md:text-sm text-zinc-300 truncate max-w-[100px]">{user?.name}</span>
                         </div>
                         <button
                             onClick={logout}
-                            className="flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/30 rounded-lg transition-all text-red-400 hover:text-red-300"
+                            className="flex items-center gap-2 px-3 py-1.5 md:px-4 md:py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 hover:border-red-500/30 rounded-lg transition-all text-red-400 hover:text-red-300"
                         >
-                            <LogOut size={16} />
-                            <span className="text-sm font-medium">Logout</span>
+                            <LogOut size={14} />
+                            <span className="text-xs md:text-sm font-medium">Logout</span>
                         </button>
                     </>
                 ) : (
                     <>
                         <button
                             onClick={() => setShowAuthModal(true)}
-                            className="px-4 py-2 text-sm font-medium text-zinc-300 hover:text-white transition-colors"
+                            className="px-3 py-1.5 md:px-4 md:py-2 text-xs md:text-sm font-medium text-zinc-300 hover:text-white transition-colors"
                         >
                             Sign In
                         </button>
                         <button
                             onClick={() => setShowAuthModal(true)}
-                            className="px-6 py-2 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 rounded-lg text-sm font-bold transition-all shadow-lg shadow-indigo-600/20"
+                            className="px-4 py-1.5 md:px-6 md:py-2 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 rounded-lg text-xs md:text-sm font-bold transition-all shadow-lg shadow-indigo-600/20"
                         >
                             Sign Up
                         </button>
@@ -63,12 +63,12 @@ const LandingPage = ({ onSelect }) => {
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="z-10 text-center mb-16"
+                className="z-10 text-center mb-10 md:mb-16 mt-16 md:mt-0"
             >
-                <h1 className="text-5xl font-bold tracking-tight mb-4 bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">
+                <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-4 bg-gradient-to-r from-white to-zinc-400 bg-clip-text text-transparent">
                     AlgoVisualizer
                 </h1>
-                <p className="text-zinc-500 text-lg max-w-2xl mx-auto">
+                <p className="text-zinc-500 text-base md:text-lg max-w-2xl mx-auto px-4">
                     Interactive visualizations for complex algorithms. {!isAuthenticated && 'Sign in to'} explore execution flows and performance metrics.
                 </p>
             </motion.div>

@@ -93,13 +93,13 @@ const GanttChart = ({ timeline, isSimulating, isPaused, speed, status, onComplet
             className="bg-zinc-900/80 backdrop-blur-xl rounded-2xl border border-white/5 p-6 shadow-2xl relative overflow-hidden"
         >
             {/* Header */}
-            <div className="flex justify-between items-end mb-8 relative z-10">
+            <div className="flex justify-between items-end mb-6 md:mb-8 relative z-10">
                 <div>
-                    <h3 className="text-xl font-bold text-zinc-200 tracking-tight">Timeline</h3>
-                    <p className="text-xs text-zinc-500 mt-1 font-medium">REAL-TIME EXECUTION</p>
+                    <h3 className="text-lg md:text-xl font-bold text-zinc-200 tracking-tight">Timeline</h3>
+                    <p className="text-[10px] md:text-xs text-zinc-500 mt-1 font-medium">REAL-TIME EXECUTION</p>
                 </div>
-                <div className="text-2xl font-mono font-bold text-blue-500 tabular-nums flex items-baseline gap-1">
-                    {currentTime.toFixed(2)} <span className="text-zinc-600 text-sm font-sans font-medium">/ {totalDuration}ms</span>
+                <div className="text-xl md:text-2xl font-mono font-bold text-blue-500 tabular-nums flex items-baseline gap-1">
+                    {currentTime.toFixed(2)} <span className="text-zinc-600 text-[10px] md:text-sm font-sans font-medium">/ {totalDuration}ms</span>
                 </div>
             </div>
 

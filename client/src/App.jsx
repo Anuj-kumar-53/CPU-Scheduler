@@ -36,7 +36,7 @@ const App = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="h-screen bg-zinc-950 overflow-hidden">
+    <div className="min-h-screen bg-zinc-950">
       <AnimatePresence mode="wait">
         <Routes>
           <Route path="/" element={<LandingPage onSelect={(view) => navigate(view === 'cpu' ? '/cpu' : '/dsa')} />} />
