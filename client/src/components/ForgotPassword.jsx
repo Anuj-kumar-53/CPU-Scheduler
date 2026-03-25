@@ -16,6 +16,7 @@ const ForgotPassword = () => {
         setLoading(true);
 
         try {
+            console.log('Attempting request to:', `${import.meta.env.VITE_API_BASE_URL}/api/auth/forgot-password`);
             const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/auth/forgot-password`, { email });
             setStatus({ type: 'success', message: response.data.message });
         } catch (err) {
