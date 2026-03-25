@@ -4,6 +4,8 @@ import LandingPage from './components/LandingPage';
 import CPUScheduler from './components/CPUScheduler';
 import DSAVisualizer from './components/DSAVisualizer';
 import AuthModal from './components/AuthModal';
+import ForgotPassword from './components/ForgotPassword';
+import ResetPassword from './components/ResetPassword';
 import { AnimatePresence } from 'framer-motion';
 import { useAuth } from './context/AuthContext';
 
@@ -40,6 +42,8 @@ const App = () => {
       <AnimatePresence mode="wait">
         <Routes>
           <Route path="/" element={<LandingPage onSelect={(view) => navigate(view === 'cpu' ? '/cpu' : '/dsa')} />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route
             path="/cpu"
             element={

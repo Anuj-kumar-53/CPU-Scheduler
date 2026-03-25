@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, User, AlertCircle } from 'lucide-react';
 import { GoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 const AuthModal = ({ isOpen, onClose }) => {
@@ -14,6 +15,7 @@ const AuthModal = ({ isOpen, onClose }) => {
     });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
 
     const { login } = useAuth();
 
@@ -183,8 +185,21 @@ const AuthModal = ({ isOpen, onClose }) => {
                                     placeholder="••••••••"
                                 />
                             </div>
-                            {isSignUp && (
+                            {isSignUp ? (
                                 <p className="mt-1 text-xs text-zinc-500">Must be at least 6 characters</p>
+                            ) : (
+                                <div className="flex justify-end mt-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            onClose();
+                                            navigate('/forgot-password');
+                                        }}
+                                        className="text-xs text-indigo-400 hover:text-indigo-300 transition-colors focus:outline-none"
+                                    >
+                                        Forgot Password?
+                                    </button>
+                                </div>
                             )}
                         </div>
 
