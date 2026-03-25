@@ -248,7 +248,9 @@ router.post('/forgot-password', async (req, res) => {
         if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
             try {
                 const transporter = nodemailer.createTransport({
-                    service: 'gmail',
+                    host: 'smtp.gmail.com',
+                    port: 465,
+                    secure: true, // use SSL
                     auth: {
                         user: process.env.EMAIL_USER,
                         pass: process.env.EMAIL_PASS
@@ -262,8 +264,12 @@ router.post('/forgot-password', async (req, res) => {
                     text: message
                 };
 
-                await transporter.sendMail(mailOptions);
-                console.log('Reset email sent to:', user.email);
+                // Remove await to make it fire-and-forget and prevent hanging
+                transporter.sendMail(mailOptions).then(() => {
+                    console.log('Reset email sent to:', user.email);
+                }).catch((emailErr) => {
+                    console.error('Failed to send email via NodeMailer:', emailErr);
+                });
             } catch (emailErr) {
                 console.error('Failed to send email via NodeMailer:', emailErr);
             }
